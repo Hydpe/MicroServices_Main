@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
     env:
       GHCR_USERNAME: ${{ github.actor }}
@@ -28,22 +28,46 @@ jobs:
           username: ${{ env.GHCR_USERNAME }}
           password: ${{ env.GHCR_TOKEN }}
 
+      # -------------------- API Gateway --------------------
       - name: Build and push ApiGateway image
         run: |
           docker build -t $IMAGE_NAMESPACE/api-gateway:latest ./ApiGateway
           docker push $IMAGE_NAMESPACE/api-gateway:latest
 
+      - name: Trigger Render deployment for ApiGateway
+        run: |
+          curl -X POST "https://api.render.com/deploy/srv-${{ secrets.APIGATEWAY_SERVICE_ID }}" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}"
+
+      # -------------------- Auth Service --------------------
       - name: Build and push AuthService image
         run: |
           docker build -t $IMAGE_NAMESPACE/auth-service:latest ./AuthService
           docker push $IMAGE_NAMESPACE/auth-service:latest
 
+      - name: Trigger Render deployment for AuthService
+        run: |
+          curl -X POST "https://api.render.com/deploy/srv-${{ secrets.AUTH_SERVICE_ID }}" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}"
+
+      # -------------------- Student Service --------------------
       - name: Build and push StudentService1 image
         run: |
           docker build -t $IMAGE_NAMESPACE/student-service1:latest ./StudentService
           docker push $IMAGE_NAMESPACE/student-service1:latest
 
+      - name: Trigger Render deployment for StudentService1
+        run: |
+          curl -X POST "https://api.render.com/deploy/srv-${{ secrets.STUDENT_SERVICE_ID }}" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}"
+
+      # -------------------- Service Registry --------------------
       - name: Build and push ServiceRegistry image
         run: |
           docker build -t $IMAGE_NAMESPACE/service-registry:latest ./ServiceRegistry
           docker push $IMAGE_NAMESPACE/service-registry:latest
+
+      - name: Trigger Render deployment for ServiceRegistry
+        run: |
+          curl -X POST "https://api.render.com/deploy/srv-${{ secrets.REGISTRY_SERVICE_ID }}" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}"

@@ -8,9 +8,12 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka/
+      defaultZone: https://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka/
   instance:
     prefer-ip-address: true
     hostname: auth-service
 
 # Feign is enabled via @EnableFeignClients in your main class
+student:
+  service:
+    url: ${STUDENT_SERVICE_URL}
