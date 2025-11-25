@@ -1,7 +1,11 @@
 server:
-  port: 8761
+  port: ${SERVER_PORT:8761}
+
+spring:
+  application:
+    name: ${APP_NAME:service-registry}
 
 eureka:
   client:
-    register-with-eureka: false  # Don't register the server itself
-    fetch-registry: false         # Don't fetch registry
+    register-with-eureka: ${EUREKA_REGISTER:false}
+    fetch-registry: ${EUREKA_FETCH:false}

@@ -1,7 +1,5 @@
 services:
-  # -------------------------
-  # EUREKA SERVICE REGISTRY
-  # -------------------------
+
   service-registry:
     image: hyder014/service-registry:latest
     build: ./ServiceRegistry
@@ -9,11 +7,11 @@ services:
     ports:
       - "8761:8761"
     environment:
-      SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: default
+      SERVER_PORT: 8761
+      SERVICE_NAME: service-registry
 
-  # -------------------------
-  # POSTGRES DATABASE
-  # -------------------------
+
   postgres_db:
     image: postgres:16
     container_name: postgres_db
@@ -26,9 +24,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  # -------------------------
-  # STUDENT SERVICE
-  # -------------------------
+
   student-service:
     image: hyder014/student-service:latest
     build: ./StudentService
@@ -37,13 +33,20 @@ services:
       - service-registry
       - postgres_db
     environment:
-      SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: default
+      SERVER_PORT: 8081
+      APP_NAME: student-service
+      DB_HOST: postgres_db
+      DB_PORT: 5432
+      DB_NAME: studentdb
+      DB_USERNAME: postgres
+      DB_PASSWORD: Hyder@014
+      EUREKA_HOST: service-registry
+      EUREKA_PORT: 8761
     ports:
       - "8081:8081"
 
-  # -------------------------
-  # AUTH SERVICE
-  # -------------------------
+
   auth-service:
     image: hyder014/auth-service:latest
     build: ./AuthService
@@ -51,13 +54,15 @@ services:
     depends_on:
       - service-registry
     environment:
-      SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: default
+      SERVER_PORT: 8090
+      SERVICE_NAME: auth-service
+      EUREKA_HOST: service-registry
+      EUREKA_PORT: 8761
+      STUDENT_SERVICE_URL: http://student-service:8081
     ports:
       - "8090:8090"
 
-  # -------------------------
-  # API GATEWAY
-  # -------------------------
   api-gateway:
     image: hyder014/api-gateway:latest
     build: ./ApiGateway
@@ -67,21 +72,15 @@ services:
       - auth-service
       - student-service
     environment:
-      SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: default
+      SERVER_PORT: 8080
+      APP_NAME: api-gateway
+      EUREKA_HOST: service-registry
+      EUREKA_PORT: 8761
+      FRONTEND_URL: http://localhost:3000
     ports:
       - "8080:8080"
 
-  # -------------------------
-  # FRONTEND (REACT + NGINX)
-  # -------------------------
-  frontend:
-    image: hyder014/frontend:latest
-    build: ./frontend
-    container_name: frontend_app
-    depends_on:
-      - api-gateway
-    ports:
-      - "3000:80"
 
 volumes:
   pgdata:

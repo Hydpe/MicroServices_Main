@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name="student-service")
+@FeignClient(name="student-service",url="${student.service.url}")
 public interface studentClient {
        @GetMapping("/student/email/{email}")
        Student findByEmail(@PathVariable("email") String email);
