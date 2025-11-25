@@ -40,7 +40,7 @@ jobs:
 
       - name: Build and push StudentService1 image
         run: |
-          docker build -t $IMAGE_NAMESPACE/student-service1:latest ./StudentService1
+          docker build -t $IMAGE_NAMESPACE/student-service1:latest ./StudentService
           docker push $IMAGE_NAMESPACE/student-service1:latest
 
       - name: Build and push ServiceRegistry image
