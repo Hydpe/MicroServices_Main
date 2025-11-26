@@ -36,9 +36,7 @@ jobs:
 
       - name: Trigger Render deployment for ApiGateway
         run: |
-          curl -X POST \
-            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-            https://api.render.com/deploy/${{ secrets.APIGATEWAY_SERVICE_ID }}
+          curl -X POST "${{ secrets.APIGATEWAY_DEPLOY_HOOK }}"
 
       # -------------------- Auth Service --------------------
       - name: Build and push AuthService image
@@ -48,9 +46,7 @@ jobs:
 
       - name: Trigger Render deployment for AuthService
         run: |
-          curl -X POST \
-            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-            https://api.render.com/deploy/${{ secrets.AUTH_SERVICE_ID }}
+          curl -X POST "${{ secrets.AUTHSERVICE_DEPLOY_HOOK }}"
 
       # -------------------- Student Service --------------------
       - name: Build and push StudentService1 image
@@ -60,9 +56,7 @@ jobs:
 
       - name: Trigger Render deployment for StudentService1
         run: |
-          curl -X POST \
-            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-            https://api.render.com/deploy/${{ secrets.STUDENT_SERVICE_ID }}
+          curl -X POST "${{ secrets.STUDENT_DEPLOY_HOOK }}"
 
       # -------------------- Service Registry --------------------
       - name: Build and push ServiceRegistry image
@@ -72,6 +66,4 @@ jobs:
 
       - name: Trigger Render deployment for ServiceRegistry
         run: |
-          curl -X POST \
-            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-            https://api.render.com/deploy/${{ secrets.REGISTRY_SERVICE_ID }}
+          curl -X POST "${{ secrets.REGISTRY_DEPLOY_HOOK }}"
