@@ -8,7 +8,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: https://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka/
+      defaultZone: https://${EUREKA_HOST:localhost}/eureka/
   instance:
     prefer-ip-address: true
     hostname: auth-service
